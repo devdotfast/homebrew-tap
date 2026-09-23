@@ -1,19 +1,19 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
   homepage "https://github.com/devdotfast/diffr"
-  version "0.1.2"
+  version "0.1.3"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     depends_on arch: :arm64
-    url "https://github.com/devdotfast/diffr/releases/download/0.1.2/diffr-0.1.2-aarch64-apple-darwin.tar.gz"
-    sha256 "f1b5ff849124bf389be3aaa4e6b4b0acfcbfe8f6c7c102b0f44f84e41a7555e9"
+    url "https://github.com/devdotfast/diffr/releases/download/0.1.3/diffr-0.1.3-aarch64-apple-darwin.tar.gz"
+    sha256 "f4a8ab41893d7a670de7457cfa0090ea9367bdc585500b600e1b692eca216dbe"
   end
 
   on_linux do
     depends_on arch: :x86_64
-    url "https://github.com/devdotfast/diffr/releases/download/0.1.2/diffr-0.1.2-x86_64-unknown-linux-gnu.tar.gz"
-    sha256 "97ef3a24dc6ca19fa699f0e989fcd59699336558f4ac5e57ed404c89b6a0f9d4"
+    url "https://github.com/devdotfast/diffr/releases/download/0.1.3/diffr-0.1.3-x86_64-unknown-linux-gnu.tar.gz"
+    sha256 "2bbdc89ffbcd5356c0527cf97e58169ffd9d940db3e518715e24d6cc11f5d4ff"
   end
 
   def install
