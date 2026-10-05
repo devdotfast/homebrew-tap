@@ -34,27 +34,42 @@ jobs:
           done
           test "$(defaults read /Applications/Whiteboard.app/Contents/Info CFBundleIdentifier)" = dev.fast.review
           test "$(defaults read "/Applications/Whiteboard Preview.app/Contents/Info" CFBundleIdentifier)" = dev.fast.review.preview
-      - name: Launch both side by side
+      - name: Launch preview while quarantined
+        continue-on-error: true
+        run: |
+          set -x
+          open -n "/Applications/Whiteboard Preview.app"
+          sleep 45
+          pgrep -lf "Whiteboard Preview" || true
+          pgrep -lf CoreServicesUIAgent || true
+          screencapture -x quarantined.png
+          osascript -e 'tell application "System Events" to get name of every window of every process whose visible is true' || true
+          pkill -f "Whiteboard Preview" || true
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: quarantined-${{ matrix.os }}
+          path: quarantined.png
+          if-no-files-found: ignore
+      - name: Launch both side by side without quarantine
         run: |
           set -euxo pipefail
+          xattr -dr com.apple.quarantine /Applications/Whiteboard.app "/Applications/Whiteboard Preview.app"
           wb() {
             app="$1"; shift
             ELECTRON_RUN_AS_NODE=1 "$app/Contents/MacOS/$(defaults read "$app/Contents/Info" CFBundleExecutable)" \
               "$app/Contents/Resources/app/review-runtime/dist/cli.js" "$@"
           }
-          wb /Applications/Whiteboard.app version
           wb /Applications/Whiteboard.app app
           wb "/Applications/Whiteboard Preview.app" app
           for key in stable preview; do
             f="$HOME/.dev/review-desktop/instances/$key.json"
-            for i in $(seq 1 90); do
-              [ -f "$f" ] && kill -0 "$(jq -r .serverPid "$f")" 2>/dev/null && break
-              sleep 2
-            done
             jq '{channel,appPath,appVersion,cliVersion}' "$f"
+            kill -0 "$(jq -r .serverPid "$f")"
             curl -s -o /dev/null -w "$key server %{http_code}\n" "$(jq -r .url "$f")"
           done
           test "$(jq -r .appPath ~/.dev/review-desktop/instances/stable.json)" = /Applications/Whiteboard.app
+          test "$(jq -r .appPath ~/.dev/review-desktop/instances/preview.json)" = "/Applications/Whiteboard Preview.app"
           test "$(jq -r .appVersion ~/.dev/review-desktop/instances/stable.json)" = "$(brew info --cask --json=v2 devdotfast/tap/whiteboard | jq -r '.casks[0].version')"
           wb /Applications/Whiteboard.app instances
       - name: Upgrade is a no-op
@@ -125,7 +140,10 @@ jobs:
       - name: Launch and wait for Squirrel to stage the update
         run: |
           set -euxo pipefail
+          xattr -dr com.apple.quarantine /Applications/Whiteboard.app
           open -n /Applications/Whiteboard.app
+          sleep 20
+          pgrep -lx Whiteboard
           for i in $(seq 1 120); do
             ls ~/Library/Caches/dev.fast.review.ShipIt/*/ 2>/dev/null | grep -q Whiteboard.app && break
             sleep 5
