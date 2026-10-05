@@ -36,14 +36,15 @@ jobs:
           test "$(defaults read "/Applications/Whiteboard Preview.app/Contents/Info" CFBundleIdentifier)" = dev.fast.review.preview
       - name: Launch preview while quarantined
         continue-on-error: true
+        timeout-minutes: 3
         run: |
           set -x
           open -n "/Applications/Whiteboard Preview.app"
           sleep 45
           pgrep -lf "Whiteboard Preview" || true
           pgrep -lf CoreServicesUIAgent || true
-          screencapture -x quarantined.png
-          osascript -e 'tell application "System Events" to get name of every window of every process whose visible is true' || true
+          perl -e 'alarm 20; exec @ARGV' screencapture -x quarantined.png || true
+          log show --last 2m --predicate 'subsystem == "com.apple.syspolicy" OR process == "CoreServicesUIAgent"' --style compact 2>/dev/null | grep -i -E "whiteboard|quarantine|prompt|gatekeeper" | tail -20 || true
           pkill -f "Whiteboard Preview" || true
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
@@ -145,10 +146,11 @@ jobs:
           sleep 20
           pgrep -lx Whiteboard
           for i in $(seq 1 120); do
-            ls ~/Library/Caches/dev.fast.review.ShipIt/*/ 2>/dev/null | grep -q Whiteboard.app && break
+            [ -f ~/Library/Caches/dev.fast.review.ShipIt/ShipItState.plist ] && break
             sleep 5
           done
-          ls -R ~/Library/Caches/dev.fast.review.ShipIt | head -20
+          ls ~/Library/Caches/dev.fast.review.ShipIt
+          plutil -p ~/Library/Caches/dev.fast.review.ShipIt/ShipItState.plist
       - name: Quit and confirm the app replaced itself
         run: |
           set -euxo pipefail
