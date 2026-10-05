@@ -39,13 +39,14 @@ jobs:
         timeout-minutes: 3
         run: |
           set -x
-          open -n "/Applications/Whiteboard Preview.app"
-          sleep 45
+          ( open -n "/Applications/Whiteboard Preview.app" & )
+          sleep 30
           pgrep -lf "Whiteboard Preview" || true
           pgrep -lf CoreServicesUIAgent || true
           perl -e 'alarm 20; exec @ARGV' screencapture -x quarantined.png || true
           log show --last 2m --predicate 'subsystem == "com.apple.syspolicy" OR process == "CoreServicesUIAgent"' --style compact 2>/dev/null | grep -i -E "whiteboard|quarantine|prompt|gatekeeper" | tail -20 || true
-          pkill -f "Whiteboard Preview" || true
+          pkill -9 -f "Whiteboard Preview" || true
+          pkill -9 -x open || true
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
@@ -55,6 +56,7 @@ jobs:
       - name: Launch both side by side without quarantine
         run: |
           set -euxo pipefail
+          pkill -9 -f "Whiteboard Preview" || true
           xattr -dr com.apple.quarantine /Applications/Whiteboard.app "/Applications/Whiteboard Preview.app"
           wb() {
             app="$1"; shift
@@ -150,7 +152,7 @@ jobs:
             sleep 5
           done
           ls ~/Library/Caches/dev.fast.review.ShipIt
-          plutil -p ~/Library/Caches/dev.fast.review.ShipIt/ShipItState.plist
+          cat ~/Library/Caches/dev.fast.review.ShipIt/ShipItState.plist
       - name: Quit and confirm the app replaced itself
         run: |
           set -euxo pipefail
