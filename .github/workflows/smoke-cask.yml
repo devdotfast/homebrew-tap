@@ -64,7 +64,7 @@ jobs:
               "$app/Contents/Resources/app/review-runtime/dist/cli.js" "$@"
           }
           wb /Applications/Whiteboard.app app
-          wb "/Applications/Whiteboard Preview.app" app
+          DEV_REVIEW_INSTANCE=preview wb "/Applications/Whiteboard Preview.app" app
           for key in stable preview; do
             f="$HOME/.dev/review-desktop/instances/$key.json"
             jq '{channel,appPath,appVersion,cliVersion}' "$f"
