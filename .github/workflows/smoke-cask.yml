@@ -1,0 +1,148 @@
+name: Smoke Whiteboard casks
+
+on:
+  push:
+    branches: [smoke-cask]
+
+jobs:
+  fresh:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+    steps:
+      - name: Install both casks from the public tap
+        run: |
+          set -euxo pipefail
+          brew update
+          brew tap devdotfast/tap
+          brew install --cask devdotfast/tap/whiteboard devdotfast/tap/whiteboard@preview
+          brew list --cask
+      - name: Check bundles
+        run: |
+          set -euxo pipefail
+          for app in "/Applications/Whiteboard.app" "/Applications/Whiteboard Preview.app"; do
+            exe="$app/Contents/MacOS/$(defaults read "$app/Contents/Info" CFBundleExecutable)"
+            lipo -archs "$exe" | tee /dev/stderr | grep -qx "$(uname -m)"
+            codesign --verify --deep --strict "$app"
+            spctl --assess --type execute -vv "$app" 2>&1 | tee /dev/stderr | grep -q "Notarized Developer ID"
+            xattr -p com.apple.quarantine "$app" || echo "no quarantine xattr"
+          done
+          test "$(defaults read /Applications/Whiteboard.app/Contents/Info CFBundleIdentifier)" = dev.fast.review
+          test "$(defaults read "/Applications/Whiteboard Preview.app/Contents/Info" CFBundleIdentifier)" = dev.fast.review.preview
+      - name: Launch both side by side
+        run: |
+          set -euxo pipefail
+          wb() {
+            app="$1"; shift
+            ELECTRON_RUN_AS_NODE=1 "$app/Contents/MacOS/$(defaults read "$app/Contents/Info" CFBundleExecutable)" \
+              "$app/Contents/Resources/app/review-runtime/dist/cli.js" "$@"
+          }
+          wb /Applications/Whiteboard.app version
+          wb /Applications/Whiteboard.app app
+          wb "/Applications/Whiteboard Preview.app" app
+          for key in stable preview; do
+            f="$HOME/.dev/review-desktop/instances/$key.json"
+            for i in $(seq 1 90); do
+              [ -f "$f" ] && kill -0 "$(jq -r .serverPid "$f")" 2>/dev/null && break
+              sleep 2
+            done
+            jq '{channel,appPath,appVersion,cliVersion}' "$f"
+            curl -s -o /dev/null -w "$key server %{http_code}\n" "$(jq -r .url "$f")"
+          done
+          test "$(jq -r .appPath ~/.dev/review-desktop/instances/stable.json)" = /Applications/Whiteboard.app
+          test "$(jq -r .appVersion ~/.dev/review-desktop/instances/stable.json)" = "$(brew info --cask --json=v2 devdotfast/tap/whiteboard | jq -r '.casks[0].version')"
+          wb /Applications/Whiteboard.app instances
+      - name: Upgrade is a no-op
+        run: |
+          set -euxo pipefail
+          test -z "$(brew outdated --cask)"
+          brew upgrade --cask devdotfast/tap/whiteboard 2>&1 | tee /dev/stderr
+      - name: Zap removes app data but keeps ~/.dev
+        run: |
+          set -euxo pipefail
+          osascript -e 'quit app "Whiteboard"' -e 'quit app "Whiteboard Preview"' || true
+          sleep 5
+          ls -d ~/Library/Application\ Support/Whiteboard* ~/.dev-fast-review* ~/Library/Caches/dev.fast.review* || true
+          brew uninstall --cask --zap devdotfast/tap/whiteboard devdotfast/tap/whiteboard@preview
+          test ! -e /Applications/Whiteboard.app
+          test ! -e "/Applications/Whiteboard Preview.app"
+          test ! -e ~/Library/Application\ Support/Whiteboard
+          test ! -e "$HOME/Library/Application Support/Whiteboard Preview"
+          test ! -e ~/.dev-fast-review
+          test -d ~/.dev/review-desktop
+
+  adopt:
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+    steps:
+      - name: Adopt a DMG install
+        run: |
+          set -euxo pipefail
+          curl -fsSLo wb.dmg https://install.dev.fast/releases/latest/darwin-arm64/Whiteboard.dmg
+          hdiutil attach -nobrowse -mountpoint /tmp/wb wb.dmg
+          cp -R /tmp/wb/Whiteboard.app /Applications/
+          hdiutil detach /tmp/wb
+          brew tap devdotfast/tap
+          ! brew install --cask devdotfast/tap/whiteboard
+          brew install --cask --adopt devdotfast/tap/whiteboard
+          brew list --cask | grep -qx whiteboard
+          codesign --verify --deep --strict /Applications/Whiteboard.app
+          brew uninstall --cask devdotfast/tap/whiteboard
+          test ! -e /Applications/Whiteboard.app
+
+  self-update:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-15, arch: arm64 }
+          - { os: macos-15-intel, arch: x64 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      OLD: 0.1.5
+    steps:
+      - name: Install the previous release through the cask
+        run: |
+          set -euxo pipefail
+          brew tap devdotfast/tap
+          cask="$(brew --repository devdotfast/tap)/Casks/whiteboard.rb"
+          url="https://install.dev.fast/releases/$OLD/darwin-${{ matrix.arch }}/Whiteboard-darwin-${{ matrix.arch }}-$OLD.zip"
+          sha=$(curl -fsSL "$url" | shasum -a 256 | cut -d' ' -f1)
+          new=$(sed -nE 's/^  version "([^"]+)"/\1/p' "$cask")
+          echo "NEW=$new" >> "$GITHUB_ENV"
+          sed -i '' -E "s/^(  version )\"[^\"]+\"/\1\"$OLD\"/; s/[0-9a-f]{64}/$sha/g" "$cask"
+          HOMEBREW_NO_INSTALL_FROM_API=1 brew install --cask devdotfast/tap/whiteboard
+          grep -o '"commit": *"[^"]*"' /Applications/Whiteboard.app/Contents/Resources/app/product.json | tee old-commit
+      - name: Launch and wait for Squirrel to stage the update
+        run: |
+          set -euxo pipefail
+          open -n /Applications/Whiteboard.app
+          for i in $(seq 1 120); do
+            ls ~/Library/Caches/dev.fast.review.ShipIt/*/ 2>/dev/null | grep -q Whiteboard.app && break
+            sleep 5
+          done
+          ls -R ~/Library/Caches/dev.fast.review.ShipIt | head -20
+      - name: Quit and confirm the app replaced itself
+        run: |
+          set -euxo pipefail
+          osascript -e 'quit app "Whiteboard"' || pkill -x Whiteboard || true
+          want=$(curl -fsS "https://update.dev.fast/api/update/darwin${{ matrix.arch == 'arm64' && '-arm64' || '' }}/stable/0000000?bundle=Whiteboard" | jq -r .notes)
+          for i in $(seq 1 60); do
+            grep -q "$want" /Applications/Whiteboard.app/Contents/Resources/app/product.json && break
+            sleep 5
+          done
+          grep -o '"commit": *"[^"]*"' /Applications/Whiteboard.app/Contents/Resources/app/product.json
+          grep -q "$want" /Applications/Whiteboard.app/Contents/Resources/app/product.json
+          codesign --verify --deep --strict /Applications/Whiteboard.app
+          test -z "$(brew outdated --cask)"
+          brew uninstall --cask devdotfast/tap/whiteboard
+          test ! -e /Applications/Whiteboard.app
