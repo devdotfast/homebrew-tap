@@ -27,9 +27,12 @@ jobs:
           set -euxo pipefail
           for app in "/Applications/Whiteboard.app" "/Applications/Whiteboard Preview.app"; do
             exe="$app/Contents/MacOS/$(defaults read "$app/Contents/Info" CFBundleExecutable)"
-            lipo -archs "$exe" | tee /dev/stderr | grep -qx "$(uname -m)"
+            lipo -archs "$exe"
+            test "$(lipo -archs "$exe")" = "$(uname -m)"
             codesign --verify --deep --strict "$app"
-            spctl --assess --type execute -vv "$app" 2>&1 | tee /dev/stderr | grep -q "Notarized Developer ID"
+            out=$(spctl --assess --type execute -vv "$app" 2>&1)
+            echo "$out"
+            grep -q "Notarized Developer ID" <<<"$out"
             xattr -p com.apple.quarantine "$app" || echo "no quarantine xattr"
           done
           test "$(defaults read /Applications/Whiteboard.app/Contents/Info CFBundleIdentifier)" = dev.fast.review
@@ -78,8 +81,8 @@ jobs:
       - name: Upgrade is a no-op
         run: |
           set -euxo pipefail
-          test -z "$(brew outdated --cask)"
-          brew upgrade --cask devdotfast/tap/whiteboard 2>&1 | tee /dev/stderr
+          test -z "$(brew outdated --cask devdotfast/tap/whiteboard devdotfast/tap/whiteboard@preview)"
+          brew upgrade --cask devdotfast/tap/whiteboard devdotfast/tap/whiteboard@preview
       - name: Zap removes app data but keeps ~/.dev
         run: |
           set -euxo pipefail
@@ -165,6 +168,6 @@ jobs:
           grep -o '"commit": *"[^"]*"' /Applications/Whiteboard.app/Contents/Resources/app/product.json
           grep -q "$want" /Applications/Whiteboard.app/Contents/Resources/app/product.json
           codesign --verify --deep --strict /Applications/Whiteboard.app
-          test -z "$(brew outdated --cask)"
+          test -z "$(brew outdated --cask devdotfast/tap/whiteboard)"
           brew uninstall --cask devdotfast/tap/whiteboard
           test ! -e /Applications/Whiteboard.app
