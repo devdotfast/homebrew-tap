@@ -10,8 +10,15 @@ cask "whiteboard@preview" do
   desc "Review agent-written code changes"
   homepage "https://dev.fast/"
 
+  livecheck do
+    url "https://update.dev.fast/api/update/darwin-arm64/preview/0000000?bundle=Whiteboard%20Preview"
+    strategy :json do |json|
+      json["productVersion"]
+    end
+  end
+
   auto_updates true
-  depends_on macos: ">= :monterey"
+  depends_on macos: :monterey
 
   app "Whiteboard Preview.app"
 
