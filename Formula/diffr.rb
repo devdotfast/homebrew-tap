@@ -1,28 +1,28 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
   homepage "https://github.com/devdotfast/diffr"
-  version "0.1.15"
+  version "0.1.16"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.15/diffr-0.1.15-aarch64-apple-darwin.tar.gz"
-      sha256 "3d999f95980babc356f376f40bb55eaf5f97ba65b50384295964a4ac79d9e99e"
+      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-aarch64-apple-darwin.tar.gz"
+      sha256 "151188635ca8b72baddd78ac27bcd2e2e3d46fda79746a4748a468f7b2e9da04"
     end
     on_intel do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.15/diffr-0.1.15-x86_64-apple-darwin.tar.gz"
-      sha256 "1cc9955a801fb6afcac0d11386a92940a0f472ca912562ddba7a0c86915d1641"
+      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-x86_64-apple-darwin.tar.gz"
+      sha256 "a4dae6d1793b9862dfe5a3468104f0dc2f66b7fd57a38972fca978450a748fc5"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.15/diffr-0.1.15-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "88d379cc7e3e8c6acfeb148f84ba42fc86f33332d6f5f69257ff696951aaad25"
+      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "198a9556e26b74a687586c39d3c370e9de9ad97fda9af8450bb0cab316621593"
     end
     on_intel do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.15/diffr-0.1.15-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "0a90552982e415a6c403084daf64bba6ab468f919d63d082b997714c8a8068fb"
+      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "2d6a99e2fe2eea587d68d4929710b8a136beda71c0a0f05ae29b174aef4d9389"
     end
   end
 
