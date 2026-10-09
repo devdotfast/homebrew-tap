@@ -1,28 +1,28 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
   homepage "https://github.com/devdotfast/whiteboard/tree/main/diffr"
-  version "0.1.18"
+  version "0.1.19"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-aarch64-apple-darwin.tar.gz"
-      sha256 "5709e5346417d7efc3cbb8c4df9ce8b3f63bfac5973c5d62cb98115c901e370f"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.19/diffr-0.1.19-aarch64-apple-darwin.tar.gz"
+      sha256 "6289c7ac043f679271a08a1626d6c290c5fbc4f454c281e1443ac4fe3edc8e46"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-x86_64-apple-darwin.tar.gz"
-      sha256 "1bc13d3c7bc47a8f1f3307f5a37cde398cc0a0a0900b55151a8c5ded0c8a8fc4"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.19/diffr-0.1.19-x86_64-apple-darwin.tar.gz"
+      sha256 "6e8f2b63c577f20e5156e2de506c77998b26198fad377bc677cb9abd24e1e517"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "ef87a9a24dac0a3de7ccb4efd6a2d82712bbf8a0c5bee6854d65b50fe329c54e"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.19/diffr-0.1.19-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "92d9af29fdad1e0840fd348ef3c1b7ad676953c89c0a8d096b378875a0c557c9"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "242ed0805a44729bcea2c6d1153ec1454d1f3e20fe696239b8b94fd6f0bba9af"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.19/diffr-0.1.19-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "05f34ceec0c346febb2575914718c8b0bc85e22a4a7c3cbe6b0e28ce0b4b635b"
     end
   end
 
