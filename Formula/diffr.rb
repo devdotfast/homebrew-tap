@@ -1,28 +1,28 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
   homepage "https://github.com/devdotfast/whiteboard/tree/main/diffr"
-  version "0.1.17"
+  version "0.1.18"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-aarch64-apple-darwin.tar.gz"
-      sha256 "72e51de778d6bd16cbc938a22329ae8f2fc4932e6693850b6c35fbf85c669f43"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-aarch64-apple-darwin.tar.gz"
+      sha256 "5709e5346417d7efc3cbb8c4df9ce8b3f63bfac5973c5d62cb98115c901e370f"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-x86_64-apple-darwin.tar.gz"
-      sha256 "934df0775355b05214e5c71837028c8787834c50ed4c0564ca848c2b8cbf6bc9"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-x86_64-apple-darwin.tar.gz"
+      sha256 "1bc13d3c7bc47a8f1f3307f5a37cde398cc0a0a0900b55151a8c5ded0c8a8fc4"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "4a537031d3e6c8cc84d7fcbacf2585a6e12bfbe1ddcc745e32313e3f7135cb50"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "ef87a9a24dac0a3de7ccb4efd6a2d82712bbf8a0c5bee6854d65b50fe329c54e"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "196ba55ccadcbbdd6bcb4ab10ff579d6b104ae2a3687818a659b69476705852b"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.18/diffr-0.1.18-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "242ed0805a44729bcea2c6d1153ec1454d1f3e20fe696239b8b94fd6f0bba9af"
     end
   end
 
@@ -30,8 +30,8 @@ class Diffr < Formula
     bin.install "diffr", "diffr-tui"
     doc.install "NOTICE"
     (pkgshare/"licenses").install "LICENSE"
-    (pkgshare/"licenses/tui").install "tui/LICENSE"
-    (pkgshare/"licenses/themes").install "tui/themes/LICENSE"
+    (pkgshare/"licenses/tui").install "packages/tui/LICENSE"
+    (pkgshare/"licenses/themes").install "packages/viewer/themes/LICENSE"
   end
 
   test do
