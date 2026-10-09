@@ -1,28 +1,28 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
-  homepage "https://github.com/devdotfast/diffr"
-  version "0.1.16"
+  homepage "https://github.com/devdotfast/whiteboard/tree/main/diffr"
+  version "0.1.17"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-aarch64-apple-darwin.tar.gz"
-      sha256 "151188635ca8b72baddd78ac27bcd2e2e3d46fda79746a4748a468f7b2e9da04"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-aarch64-apple-darwin.tar.gz"
+      sha256 "72e51de778d6bd16cbc938a22329ae8f2fc4932e6693850b6c35fbf85c669f43"
     end
     on_intel do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-x86_64-apple-darwin.tar.gz"
-      sha256 "a4dae6d1793b9862dfe5a3468104f0dc2f66b7fd57a38972fca978450a748fc5"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-x86_64-apple-darwin.tar.gz"
+      sha256 "934df0775355b05214e5c71837028c8787834c50ed4c0564ca848c2b8cbf6bc9"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "198a9556e26b74a687586c39d3c370e9de9ad97fda9af8450bb0cab316621593"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "4a537031d3e6c8cc84d7fcbacf2585a6e12bfbe1ddcc745e32313e3f7135cb50"
     end
     on_intel do
-      url "https://github.com/devdotfast/diffr/releases/download/0.1.16/diffr-0.1.16-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "2d6a99e2fe2eea587d68d4929710b8a136beda71c0a0f05ae29b174aef4d9389"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.17/diffr-0.1.17-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "196ba55ccadcbbdd6bcb4ab10ff579d6b104ae2a3687818a659b69476705852b"
     end
   end
 

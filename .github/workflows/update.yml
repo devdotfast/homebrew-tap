@@ -22,13 +22,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view --repo devdotfast/diffr --json tagName,assets > "$RUNNER_TEMP/release.json"
-          if ! jq -e '.assets | any(.name == "diffr.rb")' "$RUNNER_TEMP/release.json"; then
-            echo 'Latest release predates Homebrew packaging; nothing to update.'
+          tag=$(gh api --paginate repos/devdotfast/whiteboard/releases | jq -sr '
+            [.[][]
+              | select(.draft == false and .prerelease == false)
+              | select(.tag_name | test("^diffr/[0-9]+\\.[0-9]+\\.[0-9]+$"))
+              | select(any(.assets[]; .name == "diffr.rb"))]
+            | max_by(.published_at) | .tag_name // empty')
+          if [ -z "$tag" ]; then
+            echo 'No complete diffr release is available; nothing to update.'
             exit 0
           fi
-          tag=$(jq -r .tagName "$RUNNER_TEMP/release.json")
-          gh release download "$tag" --repo devdotfast/diffr --pattern diffr.rb --dir "$RUNNER_TEMP/formula"
+          gh release download "$tag" --repo devdotfast/whiteboard --pattern diffr.rb --dir "$RUNNER_TEMP/formula"
           mkdir -p Formula
           cp "$RUNNER_TEMP/formula/diffr.rb" Formula/diffr.rb
       - name: Validate and update
