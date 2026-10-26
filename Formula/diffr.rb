@@ -1,28 +1,28 @@
 class Diffr < Formula
   desc "Structural diffs with an interactive terminal frontend"
   homepage "https://github.com/devdotfast/whiteboard/tree/main/diffr"
-  version "0.1.21"
+  version "0.1.22"
   license all_of: ["MIT", "MPL-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.21/diffr-0.1.21-aarch64-apple-darwin.tar.gz"
-      sha256 "f3106d9b885e1dc259c68ad8c4521391e477de7ce92761273456405e5595e5bc"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.22/diffr-0.1.22-aarch64-apple-darwin.tar.gz"
+      sha256 "d835b5ca6372448e53a6967f8e096b72c106cc28024b8448018456fc90d46c99"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.21/diffr-0.1.21-x86_64-apple-darwin.tar.gz"
-      sha256 "d8ff3c58aed2946d0bd54a6a4b4447b3ed34664f9041d49b25543f5de1b18063"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.22/diffr-0.1.22-x86_64-apple-darwin.tar.gz"
+      sha256 "46d394c181e8938d917691b197adcd813e638a878f43a49854bac184b3c10600"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.21/diffr-0.1.21-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "713c0bcace9af1815117ad9f06d7e329b80c642b67a6241c708720b73741089d"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.22/diffr-0.1.22-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "5cd10d3ad29aaf8589818645e9a82b6bd407c16d8ed699f9eb2f80223fa5ac4b"
     end
     on_intel do
-      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.21/diffr-0.1.21-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "4aaf40ad3b3690dd4df8603f8b9172c041f3f768d31802af66a53ca047f07110"
+      url "https://github.com/devdotfast/whiteboard/releases/download/diffr%2F0.1.22/diffr-0.1.22-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "c7fb09c63d532c44ccfc9e6536520ba97d7344ef328e50f761ed2278ad42f3ef"
     end
   end
 
