@@ -1,9 +1,9 @@
 cask "whiteboard@preview" do
   arch arm: "arm64", intel: "x64"
 
-  version "0.3.5-preview.20261023.136"
-  sha256 arm:   "016c1e02c66bbf8bc634ef94f43304fbdff6137e887c216de61869b81cdabb6b",
-         intel: "df796c434399bfab2c99a3e7c1327facaa03fdae5563cfccd18ca59b14d2761e"
+  version "0.4.1-preview.20261026.137"
+  sha256 arm:   "affb8b67398667b091e833c511a51f40dc30a53edeafa42993b4d64623a5fd23",
+         intel: "d037a9c680c1f3a61da8c1e01ea51fdf6841056e83c7e27fad34afb68edcc909"
 
   url "https://install.dev.fast/releases/#{version}/darwin-#{arch}/Whiteboard-darwin-#{arch}-#{version}.zip"
   name "/dev/fast Whiteboard Preview"
